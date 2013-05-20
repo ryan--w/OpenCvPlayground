@@ -1,8 +1,15 @@
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import javax.swing.ImageIcon;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.Point;
 import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 /*
  * To change this template, choose Tools | Templates
@@ -14,6 +21,9 @@ import org.opencv.highgui.Highgui;
  * @author ryan
  */
 public class NewJFrame extends javax.swing.JFrame {
+
+
+
 
     /**
      * Creates new form NewJFrame
@@ -34,9 +44,13 @@ public class NewJFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 204, 153));
 
+        jButton1.setBackground(new java.awt.Color(255, 0, 51));
         jButton1.setText("jButton1");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -46,72 +60,76 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jLabel1.setText("jLabel1");
 
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("source");
+
+        jLabel3.setText("canny");
+
+        jLabel4.setText("dots");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(12, 12, 12)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jButton1)
-                    .add(jLabel1))
-                .add(18, 18, 18)
-                .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 107, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(33, 33, 33)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(jLabel2)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(jLabel4))
+                            .add(jLabel3)))
+                    .add(layout.createSequentialGroup()
+                        .add(12, 12, 12)
+                        .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 92, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(653, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(27, 27, 27)
-                .add(jLabel1)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 48, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel2)
+                            .add(jLabel4))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(jLabel3)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jButton1)
-                .addContainerGap(222, Short.MAX_VALUE))
-            .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jLabel1)
+                .addContainerGap(580, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        jLabel1.setText("Hi Ryan" + evt.getActionCommand());
+
 
         
+        Mat source = Highgui.imread("/Users/ryan/NetBeansProjects/MytestApp1/resources/test1.jpg", Highgui.CV_LOAD_IMAGE_ANYCOLOR);
+        Mat processed = new Mat(source.height(), source.width(), CvType.CV_8UC3);
+        Mat canny = new Mat();
         
-        Mat r = new Mat();
-        r.size();
+        jLabel1.setText((CvType.typeToString(source.type())));
         
-        Mat imgUp = Highgui.imread("/Users/ryan/NetBeansProjects/MytestApp1/resources/test1.jpg", Highgui.CV_LOAD_IMAGE_ANYCOLOR);
-        Mat edges = imgUp;
-        //Mat edges = new Mat(imgUp.size(), Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-        
-        //Imgproc.GaussianBlur(imgUp, edges, new Size(11, 11), 80);
-        
-        //Imgproc.Canny(imgUp, edges, 50, 200, 3, true);
-        
-        //Imgproc.accumulateSquare(imgUp, edges);
-        
-        MatOfByte matOfByte = new MatOfByte();
 
-        Highgui.imencode(".jpg", edges, matOfByte); 
-
-        byte[] byteArray = matOfByte.toArray();
+        process(source, processed);
         
-        ImageIcon ic = new ImageIcon(byteArray);
+        Imgproc.Canny(source, canny, 100, 100,3, true);
+        
+        ImageIcon ic = convertMatToImage(source);
+        ImageIcon ic2 = convertMatToImage(canny);
+        ImageIcon ic3 = convertMatToImage(processed);
+        
         jLabel2.setIcon(ic);
-//        
-//        
-//        BufferedImage bufImage = null;
+        jLabel3.setIcon(ic2);
+        jLabel4.setIcon(ic3);
 
-//        try {
-//
-//            InputStream in = new ByteArrayInputStream(byteArray);
-//            bufImage = ImageIO.read(in);
-//            
-//            
-//        } catch (Exception e) {
-//        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -154,5 +172,140 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
+
+    
+    
+    private static void process(Mat in, Mat out) {
+        final int rows = in.height();
+        final int cols = in.width();
+        
+
+        Mat canny = new Mat(in.height(), in.width(), CvType.CV_8U);
+        Imgproc.Canny(in, canny, 100, 200, 3, true);
+        
+        boolean[][] checked = new boolean[rows][cols];
+        for(int r = 0; r < rows; r++) {
+            for(int c = 0; c < cols; c++) {
+                checked[r][c] = false;
+            }
+        }
+        
+        
+        for(int row = 0; row < in.height(); row++) {
+            for (int col = 0; col < in.width(); col++) {
+
+                if(isCannyEdge(canny.get(row, col)) && !checked[row][col]) {
+                    checkForDot(row, col, in, canny, checked, out);
+                }
+            }
+        }
+    }
+    
+    
+    
+    private static void checkForDot(int row, int col, Mat in, Mat canny, boolean[][] checked, Mat out) {
+        // do DFS from row,col looking for loops. if we find a loop, check the size and color, if it's good, ship it.
+        
+        List<Point> loop = new ArrayList<Point>();
+        if(findLoop(row, col, row, col, canny, checked, 0, loop)) {
+            // get the point at the center of the loop
+            Point p = findMiddlePoint(loop);
+            out.put((int)p.y, (int)p.x, new byte[] {-1, -1, -1});
+        }
+    }
+    
+    // find's middle of bounding box
+    private static Point findMiddlePoint(List<Point> loop) {
+        if(loop == null || loop.isEmpty()) {
+            throw new IllegalArgumentException("empty loop");
+        }
+        
+        int minCol, maxCol;
+        minCol = maxCol = (int) loop.get(0).x;
+        
+        int minRow, maxRow;
+        minRow = maxRow = (int) loop.get(0).y;
+        
+        for(int i = 1; i < loop.size(); i++) {
+            int row = (int) loop.get(i).y;
+            int col = (int) loop.get(i).x;
+            
+            if(row > maxRow) maxRow = row;
+            if(row < minRow) minRow = row;
+            
+            if(col > maxCol) maxCol = col;
+            if(col < minCol) minCol = col;
+        }
+        
+        return new Point(((maxCol + minCol) / 2), ((maxRow + minRow) / 2)); 
+    }
+    
+    // simple method to find loops. somewhat broken because it minimizes work by avoiding lines it's checked
+    // which means that we will miss some loops
+    private static boolean findLoop(final int startRow, final int startCol, final int row, final int col, Mat canny, boolean[][] visited, final int distance, List<Point> loop) {
+        visited[row][col] = true;
+        
+        for(int r = -1; r <= 1; r++) {
+            final int nextRow = row + r;
+            if(nextRow < 0 || nextRow >= canny.height()) continue;
+            
+            for(int c = -1; c <= 1; c++) {
+                if(r == 0 && c == 0) continue;
+                
+                final int nextCol = col + c;
+                if(nextCol < 0 || nextCol >= canny.width()) continue;
+                
+                if(distance >= 8 && nextRow == startRow && nextCol == startCol) {
+                    //out.put(nextRow, nextCol, new byte[] {-1, 0, -1});
+                    loop.add(new Point(nextCol, nextRow));
+                    return true;
+                }
+                
+                if(isCannyEdge(canny.get(nextRow, nextCol)) && !visited[nextRow][nextCol]) {
+                    if(findLoop(startRow, startCol, nextRow, nextCol, canny, visited, distance + 1, loop)) {
+                        //out.put(nextRow, nextCol, new byte[] {-1, 0, -1});
+                        loop.add(new Point(nextCol, nextRow));
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    private static boolean isCannyEdge(double[] pix) {
+        return pix[0] != 0;
+    }
+    
+    private static boolean isPixelPotentialDot(double[] pix) {
+        double colorThreshold = 90;
+        double[] dotThreshold = new double[] {colorThreshold, colorThreshold, colorThreshold};
+        for(int i = 0; i < pix.length && i < 3; i++) {
+            if(pix[i] > dotThreshold[i]) return false;
+        }
+        
+        return true;
+    }
+    
+    private static boolean isPixelPotentialShirt(double[] pix) {
+        double colorThreshold = 170;
+        double[] dotThreshold = new double[] {colorThreshold, colorThreshold, colorThreshold};
+        for(int i = 0; i < pix.length && i < 3; i++) {
+            if(pix[i] < dotThreshold[i]) return false;
+        }
+        
+        return true;
+    }
+    
+    private ImageIcon convertMatToImage(Mat mat) {
+        MatOfByte matOfByte = new MatOfByte();
+        Highgui.imencode(".jpg", mat, matOfByte);
+        byte[] byteArray = matOfByte.toArray();
+        ImageIcon ic = new ImageIcon(byteArray);
+        return ic;
+    }
 }
